@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News & AI Detector</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding-top: 50px; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 600px; width: 90%; }
+        h1 { color: #2c3e50; text-align: center; }
+        
+        /* Tabs Styling */
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+        .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; background: #f9f9f9; border: none; font-weight: bold; color: #666; }
+        .tab.active { background: #fff; border-bottom: 3px solid #007bff; color: #007bff; }
+        
+        .content { display: none; }
+        .content.active { display: block; }
+
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        textarea { height: 150px; resize: vertical; }
+        
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+        button:hover { background-color: #0056b3; }
+
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; }
+        
+        /* Ampel-System */
+        .safe { background-color: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .warning { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+        .ai-suspect { background-color: #cff4fc; color: #055160; border: 1px solid #b6effb; } /* Blau für KI */
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🕵️ News & Text Analyse</h1>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('urlTab')">🌐 URL Check</button>
+        <button class="tab" onclick="switchTab('textTab')">📝 Text Check</button>
+    </div>
+
+    <div id="urlTab" class="content active">
+        <p>Prüfe die Zuverlässigkeit einer Webseite.</p>
+        <input type="text" id="urlInput" placeholder="https://..." onkeypress="handleEnter(event, 'url')">
+        <button onclick="checkUrl()">URL prüfen</button>
+        <div id="urlResult" class="result-box"></div>
+    </div>
+
+    <div id="textTab" class="content">
+        <p>Füge einen Text ein, um ihn auf "AI Slop" und reißerische Sprache zu prüfen.</p>
+        <textarea id="textInput" placeholder="Füge hier den Artikeltext oder Social Media Post ein..."></textarea>
+        <button onclick="analyzeText()">Text analysieren</button>
+        <div id="textResult" class="result-box"></div>
+    </div>
+</div>
+
+<script>
+    // --- 1. URL LOGIK (Wie vorher) ---
+    const safeSites = ["tagesschau.de", "zdf.de", "sueddeutsche.de", "zeit.de", "spiegel.de", "faz.net", "reuters.com", "bbc.com"];
+    const warningSites = ["der-postillon.com", "theonion.com", "infowars.com", "breitbart.com", "rt.com", "compact-online.de", "pi-news.net"];
+    const cautionSites = ["nius.de", "bild.de", "foxnews.com"];
+
+    function checkUrl() {
+        const input = document.getElementById('urlInput').value.toLowerCase();
+        const res = document.getElementById('urlResult');
+        res.style.display = 'block';
+        
+        try {
+            // Einfache Suche im String (für Subdomains etc.)
+            if (warningSites.some(site => input.includes(site))) {
+                res.className = 'result-box warning';
+                res.innerHTML = "⚠️ <b>Warnung:</b> Bekannt für Desinformation, Satire oder Verschwörung.";
+            } else if (cautionSites.some(site => input.includes(site))) {
+                res.className = 'result-box warning'; // Nutzt Warning Style, aber anderer Text
+                res.style.backgroundColor = '#fff3cd'; res.style.color = '#856404'; // Manuell auf Gelb ändern
+                res.innerHTML = "✋ <b>Vorsicht:</b> Oft populistisch oder meinungsstark. Fakten prüfen!";
+            } else if (safeSites.some(site => input.includes(site))) {
+                res.className = 'result-box safe';
+                res.innerHTML = "✅ <b>Etabliert:</b> Diese Domain gilt als journalistisch seriös.";
+            } else {
+                res.className = 'result-box';
+                res.style.backgroundColor = '#e2e3e5'; res.style.color = '#383d41';
+                res.innerHTML = "❓ <b>Unbekannt:</b> Nicht in der Datenbank. Prüfe das Impressum.";
+            }
+        } catch (e) { res.innerHTML = "Fehler bei der Eingabe."; }
+    }
+
+
+    // --- 2. TEXT ANALYSE LOGIK (Heuristik) ---
+    function analyzeText() {
+        const text = document.getElementById('textInput').value;
+        const res = document.getElementById('textResult');
+        res.style.display = 'block';
+
+        if (text.length < 50) {
+            res.className = 'result-box';
+            res.innerHTML = "Der Text ist zu kurz für eine Analyse.";
+            return;
+        }
+
+        // A. KI-Slop Indikatoren (Typische ChatGPT-Floskeln)
+        const aiPhrases = [
+            "als ki-sprachmodell", "as an ai language model", 
+            "es ist wichtig zu beachten", "it is important to note",
+            "zusammenfassend lässt sich sagen", "in conclusion",
+            "regenerate response", "ich habe keinen zugriff auf echtzeitdaten",
+            "delve", "testament to", "landscape of" // Englische "GPT-Wörter"
+        ];
+
+        // B. Clickbait / Alarmismus Indikatoren
+        const clickbaitWords = [
+            "SCHOCK", "SKANDAL", "LÜGE", "WAHRHEIT", "ENDLICH", 
+            "!!!", "???", "SENSATION", "GEHEIM", "DU WIRST ES NICHT GLAUBEN",
+            "REGIERUNG VERSCHWEIGT", "MAINSTREAM"
+        ];
+
+        let aiScore = 0;
+        let alarmScore = 0;
+        let detectedPatterns = [];
+
+        const lowerText = text.toLowerCase();
+
+        // Check KI
+        aiPhrases.forEach(phrase => {
+            if (lowerText.includes(phrase)) {
+                aiScore += 1;
+                detectedPatterns.push(`KI-Phrase: "${phrase}"`);
+            }
