@@ -1,0 +1,17 @@
+.share-button {
+  background-color: var(--color-border);
+  color: var(--color-text);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.share-button:hover {
+  background-color: #cbd5e1;
+  transform: translateY(-1px);
+}
