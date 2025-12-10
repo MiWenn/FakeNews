@@ -2,9 +2,9 @@ import './ExampleURLs.css';
 
 const EXAMPLE_URLS = [
   {
-    label: 'Tagesschau (seriös)',
-    url: 'https://www.tagesschau.de',
-    description: 'Etabliertes deutsches Nachrichtenportal'
+    label: 'BR.de Artikel (öffentlich-rechtlich)',
+    url: 'https://www.br.de/nachrichten/bayern/eltern-machen-ausbildung-moeglich-so-geht-es-azubis-in-bayern,V4yFo8l',
+    description: 'Bayerischer Rundfunk - Vertrauenswürdig'
   },
   {
     label: 'Wikipedia (neutral)',
@@ -12,9 +12,9 @@ const EXAMPLE_URLS = [
     description: 'Enzyklopädie-Artikel über Fake News'
   },
   {
-    label: 'Zeit Online (seriös)',
-    url: 'https://www.zeit.de',
-    description: 'Qualitätsjournalismus'
+    label: 'Tagesschau Artikel (seriös)',
+    url: 'https://www.tagesschau.de/inland/innenpolitik/index.html',
+    description: 'ARD Nachrichtenportal'
   }
 ];
 

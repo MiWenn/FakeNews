@@ -58,14 +58,20 @@ async function scrapeUrl(url) {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
-      }
+      },
+      timeout: 30000
     });
 
     if (!response.ok) {
-      throw new Error('Scraping fehlgeschlagen');
+      throw new Error(`Scraping fehlgeschlagen (HTTP ${response.status}). Bitte verwenden Sie einen direkten Artikel-Link statt der Hauptseite.`);
     }
 
     const data = await response.json();
+
+    if (!data.contents) {
+      throw new Error('Keine Inhalte gefunden. Bitte verwenden Sie einen direkten Artikel-Link.');
+    }
+
     const html = data.contents;
 
     // Parse HTML

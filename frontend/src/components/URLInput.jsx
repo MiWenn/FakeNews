@@ -18,7 +18,7 @@ function URLInput({ url, onUrlChange, onAnalyze, loading }) {
           <input
             type="text"
             className="url-input"
-            placeholder="https://example.com/artikel..."
+            placeholder="https://www.br.de/nachrichten/artikel..."
             value={url}
             onChange={(e) => onUrlChange(e.target.value)}
             disabled={loading}
@@ -32,6 +32,9 @@ function URLInput({ url, onUrlChange, onAnalyze, loading }) {
             {loading ? 'Analysiere...' : 'Analysieren'}
           </button>
         </div>
+        <p className="url-hint">
+          💡 Tipp: Verwenden Sie direkte Artikel-Links (z.B. <code>br.de/nachrichten/artikel...</code>) statt Hauptseiten für beste Ergebnisse
+        </p>
       </form>
 
       <button
