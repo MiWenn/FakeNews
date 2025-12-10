@@ -217,28 +217,87 @@ export async function analyzeURL(url) {
  * Domain reputation lists
  */
 const FAKE_NEWS_BLACKLIST = [
+  // Bekannte Desinformations- und Verschwörungswebseiten
   'compact-online.de',
   'anonymousnews.org',
   'pi-news.net',
   'journalistenwatch.com',
-  'wochenblick.at'
+  'wochenblick.at',
+  'report24.news',
+  'auf1.tv',
+  'uncut-news.ch',
+  'pravda-tv.com',
+  'neopresse.com',
+  'freie-medien.tv',
+  'legitim.ch',
+  'contra-magazin.com',
+  'kopp-verlag.de',
+  'epoch-times.de'
 ];
 
 const TRUSTED_SOURCES = [
+  // Deutsche öffentlich-rechtliche Medien
   'tagesschau.de',
   'zdf.de',
+  'ard.de',
+  'br.de',
+  'wdr.de',
+  'ndr.de',
+  'mdr.de',
+  'swr.de',
+  'rbb-online.de',
+  'hr-online.de',
+  'sr.de',
+  'deutschlandfunk.de',
+  'dw.com',
+
+  // Deutsche Qualitätsmedien
   'spiegel.de',
   'zeit.de',
   'sueddeutsche.de',
   'faz.net',
+  'tagesspiegel.de',
+  'welt.de',
+  'handelsblatt.com',
+  'wiwo.de',
+  'heise.de',
+  't-online.de',
+  'focus.de',
+  'stern.de',
+
+  // Internationale Medien
   'bbc.com',
+  'bbc.co.uk',
   'reuters.com',
   'apnews.com',
+  'nytimes.com',
+  'theguardian.com',
+  'washingtonpost.com',
+  'cnn.com',
+
+  // Wissenschaftliche Quellen
   'nature.com',
   'science.org',
+  'sciencedirect.com',
+  'springer.com',
   'pubmed.ncbi.nlm.nih.gov',
+  'ncbi.nlm.nih.gov',
+  'doi.org',
+  'arxiv.org',
+
+  // Offizielle & Statistik
   'destatis.de',
-  'ec.europa.eu'
+  'ec.europa.eu',
+  'europa.eu',
+  'bundesregierung.de',
+  'bundestag.de',
+  'rki.de',
+  'bfarm.de',
+  'umweltbundesamt.de',
+  'who.int',
+  'un.org',
+  'worldbank.org',
+  'oecd.org'
 ];
 
 function checkDomainReputation(url) {
