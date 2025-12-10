@@ -303,13 +303,29 @@ const TRUSTED_SOURCES = [
 function checkDomainReputation(url) {
   try {
     const urlObj = new URL(url);
-    const hostname = urlObj.hostname.toLowerCase();
+    let hostname = urlObj.hostname.toLowerCase();
 
-    if (FAKE_NEWS_BLACKLIST.some(domain => hostname.includes(domain))) {
+    // Remove www. prefix for cleaner comparison
+    hostname = hostname.replace(/^www\./, '');
+
+    // Helper function for safe domain matching
+    // Prevents false positives like "evil-br.de.com" matching "br.de"
+    const isInList = (domainList) => {
+      return domainList.some(domain => {
+        // Exact match (e.g., br.de === br.de)
+        if (hostname === domain) return true;
+        // Subdomain match (e.g., nachrichten.br.de matches br.de)
+        // The dot ensures only real subdomains match
+        if (hostname.endsWith('.' + domain)) return true;
+        return false;
+      });
+    };
+
+    if (isInList(FAKE_NEWS_BLACKLIST)) {
       return { type: 'blacklisted', severity: 'high' };
     }
 
-    if (TRUSTED_SOURCES.some(domain => hostname.includes(domain))) {
+    if (isInList(TRUSTED_SOURCES)) {
       return { type: 'trusted', severity: 'none' };
     }
 
