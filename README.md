@@ -2,6 +2,10 @@
 
 Ein intelligentes Tool zur Analyse von URLs und deren Inhalten auf Seriosität, Quellenqualität und potenzielle Fake News.
 
+> **🚀 NEU:** Die App läuft jetzt **komplett im Browser** ohne Backend! Perfekt für GitHub Pages Deployment. Siehe [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) für Details.
+
+**Live Demo:** https://miwenn.github.io/FakeNews/ (nach Deployment)
+
 ## Features
 
 ### 🔍 Automatische Inhaltsanalyse
@@ -30,55 +34,59 @@ Ein intelligentes Tool zur Analyse von URLs und deren Inhalten auf Seriosität, 
 
 ## Tech Stack
 
-### Backend
-- **Node.js** + **Express** - REST API Server
-- **Cheerio** - Schnelles Web-Scraping für statische Seiten
-- **Puppeteer** - Web-Scraping für JavaScript-intensive Seiten
-- **Claude AI API** - Intelligente Content-Analyse
-- **Axios** - HTTP Client
-
-### Frontend
+### Frontend-Only Architecture
 - **React** - UI Framework
 - **Vite** - Build Tool und Dev Server
+- **@anthropic-ai/sdk** - Direkte Claude AI Integration
+- **allOrigins CORS Proxy** - Web-Scraping im Browser
 - **CSS3** - Responsive Design (Mobile-First)
+- **GitHub Pages** - Kostenloses Hosting
 
-## Installation
+### Backend (Optional - Legacy)
+Falls du ein Backend bevorzugst, siehe `backend/` Ordner:
+- **Node.js** + **Express** - REST API Server
+- **Cheerio** / **Puppeteer** - Server-Side Web-Scraping
+- Siehe [DEPLOYMENT.md](DEPLOYMENT.md) für Backend-Deployment
+
+## 🚀 Quick Start (GitHub Pages)
+
+Die einfachste Methode zum Deployment:
+
+1. **Fork oder Clone** dieses Repository
+2. **Merge** den Branch `claude/url-content-analysis-013osh1wUDyBvvaRFV4ZdEvm` zu `main`
+3. **Aktiviere GitHub Pages** (Settings → Pages → GitHub Actions)
+4. **Fertig!** Die App ist live unter `https://dein-username.github.io/FakeNews/`
+
+Ausführliche Anleitung: [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md)
+
+## 💻 Lokale Installation
 
 ### Voraussetzungen
 - Node.js 18+ und npm
-- Claude API Key (von Anthropic)
+- Claude API Key (von Anthropic - https://console.anthropic.com/)
 
-### Setup
+### Setup (Frontend-Only)
 
 1. **Repository klonen**
 ```bash
 git clone <repository-url>
-cd FakeNews
+cd FakeNews/frontend
 ```
 
 2. **Dependencies installieren**
 ```bash
-npm run install-all
+npm install
 ```
 
-3. **Backend-Umgebungsvariablen konfigurieren**
+3. **Development Server starten**
 ```bash
-cd backend
-cp .env.example .env
+npm run dev
 ```
 
-Trage deinen Claude API Key in die `.env` ein:
-```
-PORT=3001
-ANTHROPIC_API_KEY=dein_api_key_hier
-NODE_ENV=development
-```
-
-4. **Frontend-Umgebungsvariablen konfigurieren** (optional)
-```bash
-cd ../frontend
-cp .env.example .env
-```
+4. **Im Browser öffnen**
+   - Gehe zu `http://localhost:3000`
+   - Gib deinen Claude API Key ein (wird in localStorage gespeichert)
+   - Fertig! 🎉
 
 ## Verwendung
 

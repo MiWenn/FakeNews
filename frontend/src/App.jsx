@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Header from './components/Header';
+import ApiKeySetup from './components/ApiKeySetup';
 import URLInput from './components/URLInput';
 import LoadingSpinner from './components/LoadingSpinner';
 import ResultDisplay from './components/ResultDisplay';
 import ExampleURLs from './components/ExampleURLs';
 import History from './components/History';
-import { analyzeURL } from './services/api';
+import { analyzeURL, hasApiKey } from './services/api';
 import { saveToHistory, getHistory } from './utils/storage';
 import './App.css';
 
@@ -15,6 +16,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [history, setHistory] = useState(getHistory());
+  const [apiKeyConfigured, setApiKeyConfigured] = useState(hasApiKey());
 
   const handleAnalyze = async (urlToAnalyze) => {
     if (!urlToAnalyze || !urlToAnalyze.trim()) {
@@ -65,31 +67,37 @@ function App() {
 
       <main className="container">
         <div className="main-content">
-          <URLInput
-            url={url}
-            onUrlChange={setUrl}
-            onAnalyze={() => handleAnalyze(url)}
-            loading={loading}
-          />
+          <ApiKeySetup onConfigured={() => setApiKeyConfigured(true)} />
 
-          {error && (
-            <div className="error-message card">
-              <h3>⚠️ Fehler</h3>
-              <p>{error}</p>
-            </div>
-          )}
-
-          {loading && <LoadingSpinner />}
-
-          {result && !loading && (
-            <ResultDisplay result={result} />
-          )}
-
-          {!loading && !result && (
+          {apiKeyConfigured && (
             <>
-              <ExampleURLs onExampleClick={handleExampleClick} />
-              {history.length > 0 && (
-                <History history={history} onHistoryClick={handleHistoryClick} />
+              <URLInput
+                url={url}
+                onUrlChange={setUrl}
+                onAnalyze={() => handleAnalyze(url)}
+                loading={loading}
+              />
+
+              {error && (
+                <div className="error-message card">
+                  <h3>⚠️ Fehler</h3>
+                  <p>{error}</p>
+                </div>
+              )}
+
+              {loading && <LoadingSpinner />}
+
+              {result && !loading && (
+                <ResultDisplay result={result} />
+              )}
+
+              {!loading && !result && (
+                <>
+                  <ExampleURLs onExampleClick={handleExampleClick} />
+                  {history.length > 0 && (
+                    <History history={history} onHistoryClick={handleHistoryClick} />
+                  )}
+                </>
               )}
             </>
           )}
