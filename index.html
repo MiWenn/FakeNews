@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Checker</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
+        h1 { color: #333; }
+        input { width: 80%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 5px; }
+        .safe { background-color: #d4edda; color: #155724; }
+        .warning { background-color: #f8d7da; color: #721c24; }
+        .unknown { background-color: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🕵️ Fake News Checker</h1>
+        <p>Gib eine URL ein, um die Quelle zu prüfen.</p>
+        <input type="text" id="urlInput" placeholder="https://beispiel-seite.de/artikel...">
+        <br>
+        <button onclick="checkUrl()">Überprüfen</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // --- DATENBANK (Hier können wir Seiten hinzufügen) ---
+        
+        // Liste von bekannten Satire- oder Fake-Seiten
+        const warningSites = [
+            "der-postillon.com", // Satire
+            "theonion.com",      // Satire
+            "infowars.com",      // Verschwörung
+            "breitbart.com",     // Bias
+            "rt.com"             // Staatsmedien
+        ];
+
+        // Liste von vertrauenswürdigen Quellen (Beispiele)
+        const safeSites = [
+            "tagesschau.de",
+            "bbc.com",
+            "reuters.com",
+            "zeit.de",
+            "spiegel.de"
+        ];
+
+        function checkUrl() {
+            const input = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!input) {
+                resultDiv.className = '';
+                resultDiv.innerText = "Bitte gib eine URL ein.";
+                return;
+            }
+
+            try {
+                // Wir extrahieren nur den Hostnamen (z.B. www.zeit.de) aus der langen URL
+                const urlObj = new URL(input.includes('http') ? input : 'https://' + input);
+                let domain = urlObj.hostname.replace('www.', '').toLowerCase();
+
+                // Logik zur Überprüfung
+                if (warningSites.includes(domain)) {
+                    resultDiv.className = 'warning';
+                    resultDiv.innerText = "⚠️ Vorsicht! Diese Seite ist als Satire oder unzuverlässig bekannt (" + domain + ").";
+                } else if (safeSites.includes(domain)) {
+                    resultDiv.className = 'safe';
+                    resultDiv.innerText = "✅ Diese Quelle gilt allgemein als seriös (" + domain + ").";
+                } else {
+                    resultDiv.className = 'unknown';
+                    resultDiv.innerText = "❓ Unbekannte Quelle (" + domain + "). Bitte überprüfe das Impressum.";
+                }
+
+            } catch (error) {
+                resultDiv.className = 'warning';
+                resultDiv.innerText = "Ungültige URL. Bitte überprüfe die Eingabe.";
+            }
+        }
+    </script>
+</body>
+</html>
